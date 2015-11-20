@@ -6,8 +6,8 @@ var Enemy = function(locX, locY, speed) {
     this.x = locX;
     this.y = locY;
     this.speed = 505 * Math.random();
-    this.width = 101;
-    this.height = 171;
+    this.width = 50;
+    this.height = 70;
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
@@ -24,10 +24,17 @@ Enemy.prototype.update = function(dt) {
         this.x = this.iniPos * this.speed * dt;//this.x = -101;
         this.y = Math.floor(Math.random() * 3) * 83 + 58;
     }
-
+/*
+if (rect1.x < rect2.x + rect2.width &&
+   rect1.x + rect1.width > rect2.x &&
+   rect1.y < rect2.y + rect2.height &&
+   rect1.height + rect1.y > rect2.y)
+*/
     if(this.row == player.row) {
-        if(this.x + 70 > player.x && this.x < player.x + 70 &&
-           this.y >= player.y - 10 && this.y <= player.y + 10 ){
+        if(this.x < player.x + player.width &&
+            this.x + this.width > player.x &&
+            this.y < player.y + player.height &&
+            this.height + this.y > player.y){
                 player.reset(true);
                 console.log("YOU LOOSE: "+this.x+','+this.y+' p:'+
                     player.x+','+player.y
@@ -100,7 +107,7 @@ Player.prototype.handleInput = function(keyCode) {
         case 'down':
             this.y += ((this.y + 50) < 455) ? 50 : 0;
             break;
-    };
+    }
 };
 //
 // Now instantiate your objects.
@@ -108,7 +115,7 @@ Player.prototype.handleInput = function(keyCode) {
 // Place the player object in a variable called player
 
 var allEnemies = [];
-for (var i = 0; i < 5; i++) {
+for (var i = 0; i < 3; i++) {
     allEnemies.push(new Enemy());
 }
 
