@@ -21,15 +21,10 @@ Enemy.prototype.update = function(dt) {
     if ((this.x + 25) <= 525)
         this.x += this.speed * dt;
     else {
-        this.x = this.iniPos * this.speed * dt;//this.x = -101;
-        this.y = Math.floor(Math.random() * 3) * 83 + 58;
+        this.x = this.iniPos * this.speed * dt;
+        this.y = Math.floor(Math.random() * 3) * 83 + 60;
     }
-/*
-if (rect1.x < rect2.x + rect2.width &&
-   rect1.x + rect1.width > rect2.x &&
-   rect1.y < rect2.y + rect2.height &&
-   rect1.height + rect1.y > rect2.y)
-*/
+
     if(this.row == player.row) {
         if(this.x < player.x + player.width &&
             this.x + this.width > player.x &&
