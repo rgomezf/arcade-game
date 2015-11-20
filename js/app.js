@@ -1,13 +1,13 @@
+
 // Enemies our player must avoid
-var Enemy = function() {
+var Enemy = function(locX, locY, speed) {
     // Variables applied to each of our instances go here, we've provided one for you to get started
-    var iniPos = Math.random();
-
-    // location of the enemy
-    this.x = (Math.random() * 50) + 101;
-    this.y = (Math.random() + 83) * 3;
-    this.speed = 0; // speed of the enemy
-
+    this.iniPos = 0;
+    this.x = locX;
+    this.y = locY;
+    this.speed = 505 * Math.random();
+    this.width = 101;
+    this.height = 171;
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
@@ -18,21 +18,23 @@ var Enemy = function() {
 Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter which will ensure the game runs at the same speed for
     // all computers.
+    if ((this.x + 25) <= 525)
+        this.x += this.speed * dt;
+    else {
+        this.x = this.iniPos * this.speed * dt;//this.x = -101;
+        this.y = Math.floor(Math.random() * 3) * 83 + 58;
+    }
 
-    // change of position == still need to work with it.  Reset the position of the enemy
-    // when it gets to the last column of the matrix
+    if(this.row == player.row) {
+        if(this.x + 70 > player.x && this.x < player.x + 70 &&
+           this.y >= player.y - 10 && this.y <= player.y + 10 ){
+                player.reset(true);
+                console.log("YOU LOOSE: "+this.x+','+this.y+' p:'+
+                    player.x+','+player.y
+                    );
+            }
 
-    //this.x = (this.x > ctx.canvas.clientWidth) ? (Math.random() * 50) : this.x + ((Math.random() * 50) * dt);
-    console.log('Seed: '+this.get());
-    if (this.x > ctx.canvas.clientWidth) {
-        this.x = (Math.floor(Math.random()*101)+101) * dt;
-        this.y = (Math.floor(Math.random()*50)+50) * 3 * dt;
-    } else {
-        this.x += (Math.floor(Math.random()*101)+101) * dt;
-        this.y = (Math.floor(Math.random()*50)+50) * 3 * dt;
-    };
-
-    // handles the collision with the player
+    }
 };
 
 // Draw the enemy on the screen, required method for game
@@ -47,10 +49,9 @@ var Player = function () {
     // location of the player
     this.x = 101 * 2;
     this.y = 83 * 4.5;
-
-    // speed of the player
-    this.speed = 0;
-
+    this.width = 101;
+    this.height = 171;
+    this.score = 0;
 
     // avatar of the player
     this.sprite = 'images/char-boy.png';
@@ -61,19 +62,31 @@ Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
-// Update the player's position, required method for game
-// Parameter: dt, a time delta between ticks
-Player.prototype.update = function(dt) {
-    // You should multiply any movement by the dt parameter
-    // which will ensure the game runs at the same speed for
-    // all computers.
+Player.prototype.reset = function(state) {
+    this.x = 101 * 2;
+    this.y = 83 * 4.5;
+    if(state){
+        this.score = 0;
+    } else {
+        console.log('Your score: '+ this.score);
+    }
 
+
+};
+
+Player.prototype.update = function(dt) {
+
+  // Check if player wins
+    if (player.y <= 50) {
+        console.log("YOU WIN: "+this.x+','+this.y);
+        this.score++;
+        player.reset(false);
+    }
 };
 
 // Player handleInput() method
 Player.prototype.handleInput = function(keyCode) {
     // Do stuff with the keyCode
-    console.log('position: '+ ',' + this.y);
     switch(keyCode) {
         case 'left':
             this.x -= ((this.x - 50) > 0) ?  50 : 0;
@@ -94,11 +107,10 @@ Player.prototype.handleInput = function(keyCode) {
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
 
-var allEnemies = new Array(); //new Enemy();
-
-for(i=0; i < 2; i++){
+var allEnemies = [];
+for (var i = 0; i < 5; i++) {
     allEnemies.push(new Enemy());
-};
+}
 
 var player = new Player();
 
